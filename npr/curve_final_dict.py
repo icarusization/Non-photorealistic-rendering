@@ -2,7 +2,7 @@ import numpy as np
 import random
 #import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
+from Utility import *
 import Image
 import Strokes
 import time
@@ -18,6 +18,7 @@ def initial_stroke(m_s):                       # Create a stroke with parameters
     return m_s
 
 
+noc=0
 
 class Single_curve(object):
 	def __init__(self,up_side, down_side,style,canvas,fig1,im):
@@ -181,6 +182,9 @@ class Single_curve(object):
 #get_color in other parts should be public, I can use it to fullfill my list of color.
 	
 	def render(self):
+		global noc
+		noc+=1
+		print 'Curve',noc
 		self.get_lenrange()
 		self.get_length()
 		self.get_width()
@@ -237,8 +241,11 @@ class Single_curve(object):
 				for j in range(len(points)):
 	    				p = points[j]
 	    				c = p[2]
-	    				#self.im.putpixel((self.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
-					self.im.putpixel((self.middle_start[i][0]+p[0],self.middle_start[i][1]+p[1]),c.get_color())
+	    				#self.im.putpixel((sself.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
+					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]]
+					new_color=np.array(c.get_color())
+					final_color=merge(new_color,old_color,0.5,0.5)
+					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]]=final_color
 				#print "pos ",200+p[0],200+p[1]
 			#self.im.show()
 

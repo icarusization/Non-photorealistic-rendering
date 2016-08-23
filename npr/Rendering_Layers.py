@@ -225,8 +225,8 @@ def segprint(out,canvas=None):
             y=k[1]
         result[y][x]=[out[k][0],out[k][1],out[k][2]]
     result=np.uint8(result)
-    plt.imshow(result)
-    plt.show()
+    #plt.imshow(result)
+    #plt.show()
 
 if __name__ == '__main__':
     #img = data.coffee()

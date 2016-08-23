@@ -137,7 +137,8 @@ class Seg_layer:
 			step = step + 1
 				
 	def draw_curve(self,s,e):
-                fig1 = plt.figure()
+                #fig1 = plt.figure()
+		fig1=None
 		line = self.brush(s,e)
 		self.get_line_tb(line)
 		self.get_line_pix()
