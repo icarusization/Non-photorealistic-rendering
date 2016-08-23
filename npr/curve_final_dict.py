@@ -230,7 +230,7 @@ class Single_curve(object):
 			c = Strokes.Color(self.up_side[self.starting_point[i]][0],self.up_side[self.starting_point[i]][1],self.up_side[self.starting_point[i]][2])
 			s.color = c
 			#print "width",self.width[i]
-			if self.middle_start[i][0]!=self.middle_start[i][1] and self.middle_end[i][0]!=self.middle_end[i][1]:
+			if self.middle_start[i][0]!=self.middle_end[i][0] and self.middle_start[i][1]!=self.middle_end[i][1]:
 				points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
 			#print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
 		#print "points len",len(points)
