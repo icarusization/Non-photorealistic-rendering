@@ -20,7 +20,7 @@ def initial_stroke(m_s):                       # Create a stroke with parameters
 
 
 class Single_curve(object):
-	def __init__(self,up_side, down_side,style,canvas,fig1,im):
+	def __init__(self,up_side, down_side,style,fig1,im):
 		self.up_side=up_side
 		self.line_b=up_side.keys()
 		self.line_b.sort()
@@ -41,7 +41,7 @@ class Single_curve(object):
 		self.__max_cur=0 #determined by the style, needed in the get_starting_points function
 		self.angle=[]
 		self.fig1 = fig1
-		self.canvas=canvas
+		#self.canvas=canvas
 		self.im=im
            
 
