@@ -2,7 +2,7 @@
 import numpy as np
 from Segmentation import *
 from Rendering_Layers import *
-from transformation import *
+#from transformation import *
 from Render_segment_layers import *
 from Canvas import *
 import math
@@ -90,12 +90,11 @@ class Painter:
         self.hsv()
         self.assigncolor()
         self.set_canvascolor()
-        
+        im = Image.new("RGB", (400, 400), (255, 255, 255))
         for seg in self.layers.segs:
-            im = Image.new("RGB", (400, 400), (255, 255, 255))
             slayer=Seg_layer(seg.edge,seg.pix,self.Canvas,im)
             slayer.render()
-        
+        im.show()
 
 if __name__ == '__main__':
     sg=Segmentation()

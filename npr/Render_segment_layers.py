@@ -76,7 +76,7 @@ class Seg_layer:
 			min_x = min_edge_x
 			max_x = int(max_edge_x - (max_edge_y-min_edge_y)*math.tan(self.alpha))
 		#max_x = int(max_edge_x + (max_edge_y-min_edge_y)*math.tan(self.alpha))
-		print "min=",min_x," max=",max_x
+		#print "min=",min_x," max=",max_x
 		get_start = False
 		step = 0
 		cur_x = 0
@@ -108,7 +108,7 @@ class Seg_layer:
 				cur_in_check = True
 			else:
 				if cur_in_check == True:
-					print count," ",cur_x," ",cur_y
+					#print count," ",cur_x," ",cur_y
 					if get_start == True:
 						end = (cur_x,cur_y)
 						#if self.edges[i][0] == start[0]:

@@ -1,6 +1,6 @@
 import numpy as np
 import random
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 import Image
@@ -69,7 +69,7 @@ class Single_curve(object):
                 cur_boundary=0.05236
                 while (isterminal==0):
                         span=random.randint(int(float(self.min_len)),int(float(self.max_len)))
-			print (span)
+			#print (span)
 			if begin+span>=(len(self.line_b)-1): #terminal condition
                         	end=len(self.line_b)-1#xX
                         	#end_d=len(self.line_d)-1
@@ -115,7 +115,7 @@ class Single_curve(object):
 				
 				#self.starting_point.append(self.line_b[cur_start])
 				while (iscurterminal==0):
-					print cur_norm
+					#print cur_norm
                                         cur_span=random.randint(int((self.min_len)/(cur_norm)),int((self.max_len)/(cur_norm)))
 					
                                 	if (cur_start+cur_span>=end):#terminal condition of cur
@@ -186,6 +186,7 @@ class Single_curve(object):
 		self.get_width()
 		self.fortest()
 		#fig1 = plt.figure()
+		'''
 		ax1 = self.fig1.add_subplot(111, aspect='equal')
 		ax1.set_xlim(-1,200)
 		ax1.set_ylim(-1,200)
@@ -197,6 +198,7 @@ class Single_curve(object):
 			angle=self.angle[i]
 			)
 			ax1.add_patch(p)
+		'''
 		#fig1.show()
 		#fig1.savefig('rect2.png', dpi=90, bbox_inches='tight')
 		self.middle_start=[]
@@ -227,17 +229,18 @@ class Single_curve(object):
 		for i in range(len(self.middle_start)):
 			c = Strokes.Color(self.up_side[self.starting_point[i]][0],self.up_side[self.starting_point[i]][1],self.up_side[self.starting_point[i]][2])
 			s.color = c
-			print "width",self.width[i]
-			points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
-			print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
+			#print "width",self.width[i]
+			if self.middle_start[i][0]!=self.middle_start[i][1] and self.middle_end[i][0]!=self.middle_end[i][1]:
+				points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
+			#print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
 		#print "points len",len(points)
-			for j in range(len(points)):
-	    			p = points[j]
-	    			c = p[2]
-	    			#self.im.putpixel((self.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
-				self.im.putpixel((self.middle_start[i][0]+p[0],self.middle_start[i][1]+p[1]),c.get_color())
-			#print "pos ",200+p[0],200+p[1]
-		self.im.show()
+				for j in range(len(points)):
+	    				p = points[j]
+	    				c = p[2]
+	    				#self.im.putpixel((self.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
+					self.im.putpixel((self.middle_start[i][0]+p[0],self.middle_start[i][1]+p[1]),c.get_color())
+				#print "pos ",200+p[0],200+p[1]
+			#self.im.show()
 
 		#pass
 #using the class of stroke, get the location of the stroke using four points. Details are TBD.
