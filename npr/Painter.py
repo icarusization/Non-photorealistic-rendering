@@ -98,7 +98,7 @@ class Painter:
 
 if __name__ == '__main__':
     sg=Segmentation()
-    sg.imread('input.jpg')
+    sg.imread('ball.jpg')
     #sg.set_no(1)
     sg.segment()
     canvas=Canvas()
