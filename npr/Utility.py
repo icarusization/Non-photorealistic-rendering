@@ -21,6 +21,11 @@ def rgb2gray(im):
             gray[row][col]=0.299*r + 0.587*g + 0.114*b
     return gray
 
+def merge(c1,c2,a1,a2):
+    #c1 over c2
+    c=c1*a1+c2*a2*(1-a1)
+    a=a1+a2*(1-a1)
+    return c/a
 
 def neighbour(row,col,height,width):
     #row,col is the coordinate of the pixel, while height,width is the dimension of the image

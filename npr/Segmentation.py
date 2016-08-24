@@ -31,10 +31,7 @@ class Segmentation:
 
     def set_no(self,no):
         self.no=no
-        for i in range(no+1):#includeing the background segment
-            tmp=Segment()
-            self.objects.append(tmp)
-
+        
     def set_ns(self,ns):
         self.ns=ns
 
@@ -158,8 +155,8 @@ class Segmentation:
         #Store the segmentation result in the subsegment list(with pix,edges)
         result=np.zeros(shape=(len(self.objects),height,width,3),dtype=np.uint8)
         for i,ob in enumerate(self.objects):
-            data=ob.pix.values()
-            location=map(list,ob.pix.keys())
+            data=np.array(ob.pix.values())
+            location=np.array(ob.pix.keys())
             #connectivity matrix for structured Ward
             connectivity=kneighbors_graph(location,n_neighbors=10,include_self=False)
             # make connectivity symmetric

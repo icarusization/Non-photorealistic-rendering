@@ -23,7 +23,6 @@ class Canvas:
         self.palette.extend(c)
 
 if __name__=='__main__':
-    #122333333
     canvas=Canvas()
     canvas.set_canvas(600,400)
     canvas.set_paper('paper.jpg')

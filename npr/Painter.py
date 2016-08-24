@@ -6,7 +6,9 @@ from Rendering_Layers import *
 from Render_segment_layers import *
 from Canvas import *
 import math
-import Image
+from skimage import io
+
+
 def hsv2rgb(h, s, v):
     h = float(h)
     s = float(s)
@@ -50,11 +52,11 @@ def rgb2hsv(r, g, b):
 
 
 class Painter:
-    def __init__(self,Seg=None,Canvas=None):
+    def __init__(self,Seg=None,canvas=None):
         self.Segmentation = Seg
         self.Subsegs = []
         self.layers = None
-        self.Canvas =  Canvas
+        self.canvas =  canvas
         
               
 
@@ -73,11 +75,11 @@ class Painter:
         self.layers.rendering()
 
     def set_canvas(self,canvas):
-        self.Canvas = canvas
+        self.canvas = canvas
 
     def set_canvascolor(self):
         for color in self.layers.pc:
-            self.Canvas.set_palettecolor(color)
+            self.canvas.set_palettecolor(color)
 
     def hsv(self):
         for seg in self.Subsegs:
@@ -92,14 +94,19 @@ class Painter:
         self.set_canvascolor()
         im = Image.new("RGB", (400, 400), (255, 255, 255))
         for seg in self.layers.segs:
-            slayer=Seg_layer(seg.edge,seg.pix,self.Canvas,im)
+            slayer=Seg_layer(seg.edge,seg.pix,self.canvas.canvas,im)
             slayer.render()
-        im.show()
+        io.imshow(self.canvas.canvas)
+        io.show()
 
 if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('ball.jpg')
+<<<<<<< HEAD
     #sg.set_no(1)
+=======
+    sg.set_no(1)
+>>>>>>> b677b182be89d9a7d8ae08d22a4efd9a2e1f401d
     sg.segment()
     canvas=Canvas()
     canvas.set_canvas(600,400)
