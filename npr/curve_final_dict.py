@@ -1,8 +1,8 @@
 import numpy as np
 import random
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
+from Utility import *
 import Image
 import Strokes
 import time
@@ -18,9 +18,10 @@ def initial_stroke(m_s):                       # Create a stroke with parameters
     return m_s
 
 
+noc=0
 
 class Single_curve(object):
-	def __init__(self,up_side, down_side,style,fig1,im):
+	def __init__(self,up_side, down_side,style,canvas,fig1,im):
 		self.up_side=up_side
 		self.line_b=up_side.keys()
 		self.line_b.sort()
@@ -41,8 +42,9 @@ class Single_curve(object):
 		self.__max_cur=0 #determined by the style, needed in the get_starting_points function
 		self.angle=[]
 		self.fig1 = fig1
-		#self.canvas=canvas
+		self.canvas=canvas
 		self.im=im
+           
 
 		
 
@@ -68,7 +70,7 @@ class Single_curve(object):
                 cur_boundary=0.05236
                 while (isterminal==0):
                         span=random.randint(int(float(self.min_len)),int(float(self.max_len)))
-			print (span)
+			#print (span)
 			if begin+span>=(len(self.line_b)-1): #terminal condition
                         	end=len(self.line_b)-1#xX
                         	#end_d=len(self.line_d)-1
@@ -88,7 +90,7 @@ class Single_curve(object):
                         l2=np.sqrt(direction2.dot(direction2))
                         if (l1*l2!=0):
 				cos_curvature=(direction1.dot(direction2)/(l1*l2))
-				#print "cos ",cos_curvature
+				#print "cos ",cos_curvdature
 				if int(cos_curvature) == 1:
 					curvature = 0
 				else:
@@ -114,7 +116,7 @@ class Single_curve(object):
 				
 				#self.starting_point.append(self.line_b[cur_start])
 				while (iscurterminal==0):
-					print cur_norm
+					#print cur_norm
                                         cur_span=random.randint(int((self.min_len)/(cur_norm)),int((self.max_len)/(cur_norm)))
 					
                                 	if (cur_start+cur_span>=end):#terminal condition of cur
@@ -148,8 +150,11 @@ class Single_curve(object):
 			l1=np.sqrt(direction1.dot(direction1))
 			direction2=np.array([1,0])
                         l2=np.sqrt(direction2.dot(direction2))
-                        cos_curvature=(direction2.dot(direction1)/(l1*l2))
-			
+			if (l1*l2!=0):
+                        	cos_curvature=(direction2.dot(direction1)/(l1*l2))
+			else:
+				cos_curvature=0			
+
                         curvature=np.arccos(cos_curvature)
 			if (flag==0):
 				self.angle.append(curvature*57.29)
@@ -180,11 +185,15 @@ class Single_curve(object):
 #get_color in other parts should be public, I can use it to fullfill my list of color.
 	
 	def render(self):
+		#global noc
+		#noc+=1
+		#print 'Curve',noc
 		self.get_lenrange()
 		self.get_length()
 		self.get_width()
 		self.fortest()
 		#fig1 = plt.figure()
+		'''
 		ax1 = self.fig1.add_subplot(111, aspect='equal')
 		ax1.set_xlim(-1,200)
 		ax1.set_ylim(-1,200)
@@ -196,6 +205,7 @@ class Single_curve(object):
 			angle=self.angle[i]
 			)
 			ax1.add_patch(p)
+		'''
 		#fig1.show()
 		#fig1.savefig('rect2.png', dpi=90, bbox_inches='tight')
 		self.middle_start=[]
@@ -224,19 +234,27 @@ class Single_curve(object):
 
 
 		for i in range(len(self.middle_start)):
+                        #c=Strokes.Color(0,255,0)
 			c = Strokes.Color(self.up_side[self.starting_point[i]][0],self.up_side[self.starting_point[i]][1],self.up_side[self.starting_point[i]][2])
 			s.color = c
-			print "width",self.width[i]
-			points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
-			print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
+			#print "width",self.width[i]
+			if self.middle_start[i][0]!=self.middle_end[i][0] and self.middle_start[i][1]!=self.middle_end[i][1]:
+				points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
+			#print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
 		#print "points len",len(points)
-			for j in range(len(points)):
-	    			p = points[j]
-	    			c = p[2]
-	    			#self.im.putpixel((self.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
-				self.im.putpixel((self.middle_start[i][0]+p[0],self.middle_start[i][1]+p[1]),c.get_color())
-			#print "pos ",200+p[0],200+p[1]
-		self.im.show()
+				for j in range(len(points)):
+	    				p = points[j]
+	    				c = p[2]
+	    				#self.im.putpixel((sself.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
+					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]
+					old_alpha=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]
+					new_color=np.array(c.get_color())
+					new_alpha=0.8
+					final_color,final_alpha=merge(new_color,old_color,new_alpha,old_alpha)
+					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]=final_color
+					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]=final_alpha
+				#print "pos ",200+p[0],200+p[1]
+			#self.im.show()
 
 		#pass
 #using the class of stroke, get the location of the stroke using four points. Details are TBD.

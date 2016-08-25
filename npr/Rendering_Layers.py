@@ -52,7 +52,7 @@ def rgb2hsv(r, g, b):
 CAM_CLOSED = 0
 CAM_RANDOM = 1
 
-palette_color = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(0,255,255),(255,0,255),(255,255,255),(0,0,0),(255,125,0),(255,218,185),(47,79,79),(119,136,153),(105,105,105),(25,25,112),(65,105,225),(0,191,255),(143,188,143),(32,178,170),(50,205,50),(250,250,210),(238,221,130),(188,143,143),(205,133,63),(210,105,30),(165,42,42),(255,165,0),(240,128,128),(255,20,147),(176,48,96),(186,85,211),(148,0,211),(147,112,219),(108,123,139),(155,48,255)]
+palette_color = [(255,0,0),(0,255,0),(0,0,255)]#,(255,255,0),(0,255,255),(255,0,255),(255,255,255),(0,0,0),(255,125,0),(255,218,185),(47,79,79),(119,136,153),(105,105,105),(25,25,112),(65,105,225),(0,191,255),(143,188,143),(32,178,170),(50,205,50),(250,250,210),(238,221,130),(188,143,143),(205,133,63),(210,105,30),(165,42,42),(255,165,0),(240,128,128),(255,20,147),(176,48,96),(186,85,211),(148,0,211),(147,112,219),(108,123,139),(155,48,255)]
 default_palette_color = [(0,0,0),(60,0.7,1),(120,1,0.5),(180,0.26,0.93),(240,0.78,0.44),(300,0.45,0.93),(355,0.83,0.89)]
 
 # Create Layer class:
@@ -69,11 +69,12 @@ default_palette_color = [(0,0,0),(60,0.7,1),(120,1,0.5),(180,0.26,0.93),(240,0.7
 class Layers:
     def __init__(self):
         self.segs = None                #   segs: A list of class "Segment" in "Utility.py".
-        self.noc = 20                   #   noc:  The maximum number of the colors which will appear in the rendering.
-        self.pc = default_palette_color #   pc:   Palette constraints. It indicates which colors in the palette are allowed.
+        self.noc = 4                   #   noc:  The maximum number of the colors which will appear in the rendering.
+        self.pc = default_palette_color    #pc:   Palette constraints. It indicates which colors in the palette are allowed.
         self.cam = CAM_CLOSED           #   cam:  Color assignment method. 
         self.vib = 0.05                 #   vib:  Random process in color assignment.  
         self.inv = 0.05                 #   inv:  Inverse_color_ration.
+        self.rev = 0                    #   ?
 
     def set_segs(self, segs):
         self.segs = segs
@@ -100,7 +101,7 @@ class Layers:
             for i in range(len(obj.subsegment)):
                 seg = obj.subsegment[i]
                 ss = len(seg.pix)
-                mc = get_mean(seg.pix)
+                mc = 0#get_mean(seg.pix)
         # decide which color shall be used
                 self.assign_color(seg, self.vib, self.rev, mc, ss)
         # carry out the segment rendering 
@@ -225,8 +226,8 @@ def segprint(out,canvas=None):
             y=k[1]
         result[y][x]=[out[k][0],out[k][1],out[k][2]]
     result=np.uint8(result)
-    plt.imshow(result)
-    plt.show()
+    #plt.imshow(result)
+    #plt.show()
 
 if __name__ == '__main__':
     #img = data.coffee()

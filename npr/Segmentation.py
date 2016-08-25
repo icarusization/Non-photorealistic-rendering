@@ -27,14 +27,11 @@ class Segmentation:
             self.objects.append(tmp)
 
     def imread(self,im):
-        self.im=io.imread(im)
+        self.im=plt.imread(im)
 
     def set_no(self,no):
         self.no=no
-        for i in range(no+1):#includeing the background segment
-            tmp=Segment()
-            self.objects.append(tmp)
-
+        
     def set_ns(self,ns):
         self.ns=ns
 
@@ -87,8 +84,8 @@ class Segmentation:
                 object_seg[row,col]=(255-label*50,255-label*50,255-label*50)
         objectbw=rgb2gray(object_seg)
         object_edges =  sobel(objectbw)
-        io.imshow(object_edges)
-        io.show()
+        #io.imshow(object_edges)
+        #io.show()
 
         # Store the segments in objects
         counter=set()
@@ -150,16 +147,16 @@ class Segmentation:
             object_edge=np.zeros(shape=(height,width),dtype=np.uint8)
             for e in ob.edge:
                 object_edge[e[0],e[1]]=1
-            io.imshow(object_edge)
-            io.show()
+            #io.imshow(object_edge)
+            #io.show()
 
 
         #The Second Segmentation
         #Store the segmentation result in the subsegment list(with pix,edges)
         result=np.zeros(shape=(len(self.objects),height,width,3),dtype=np.uint8)
         for i,ob in enumerate(self.objects):
-            data=ob.pix.values()
-            location=map(list,ob.pix.keys())
+            data=np.array(ob.pix.values())
+            location=np.array(ob.pix.keys())
             #connectivity matrix for structured Ward
             connectivity=kneighbors_graph(location,n_neighbors=10,include_self=False)
             # make connectivity symmetric
@@ -175,12 +172,12 @@ class Segmentation:
                 result[i,p[0],p[1]]=(255-label*15,255-label*15,255-label*15)
             segmentbw=rgb2gray(result[i])
             segment_edges = sobel(segmentbw)
-
+        
 
             #plt.imshow(result[i])
             #plt.show()
-            io.imshow(segment_edges)
-            io.show()
+            #io.imshow(segment_edges)
+            #io.show()
 
 
             # Store the subsegments and their edges in the subsegment list
@@ -193,17 +190,17 @@ class Segmentation:
                 row=p[0]
                 col=p[1]
                 if(segment_edges[row,col]):
+                    
                     nb=neighbour(row,col,height,width)
                     s=set()
                     for l in nb:
-                        num=l[0]*width+l[1]
-                        if(label_dict.has_key(num)):
-                            lab=label_dict[num]
+                        if(label_dict.has_key(l)):
+                            lab=label_dict[l]
                             s.add(lab)
                     for m in s:
-                        subedge[m].append((row,col))
+                        subedge[m].append((row,col))  
+            
 
-            avg=np.empty(self.ns)
             size=[]
             for n in range(self.ns):
                 tmp=Segment()
@@ -213,7 +210,6 @@ class Segmentation:
                 #print n
                 self.objects[i].subsegment[n]=tmp
                 size.append(tmp.size)
-                avg[n]=np.mean(np.array(map(list,tmp.pix.values())))
 
 
             '''

@@ -6,7 +6,7 @@
 
 import Implement_For_Stroke
 import math
-
+nos=0
 
 class Color(object):
     # Present color in two ways RGB & HSL
@@ -15,7 +15,7 @@ class Color(object):
         self.H = 0            # Hue
         self.S = 0     # Perceived intensity of a specific color. C/V.
         self.V = 0      # Black at 0, to white at 1.
-        self.water = 0          # From 0 to 1---the percentage of water containing
+        self.alpha = 0          # From 0 to 1 to represent transparency
 
     def __init__(self, R, G, B):
         R /= 255.0
@@ -80,7 +80,7 @@ class Color(object):
             r = self.V
             g = a
             b = bb
-        return int(r*255), int(g*255), int(b*255)
+        return r, g, b
 
 
 class Point(object):
@@ -131,6 +131,9 @@ class Stroke(object):
     # This part we inherit basic parameters data from the CURVES layer.
 
     def draw_strokes(self, im, x1=0, y1=0, x2=50, y2=50, width=15, color=0):
+        #global nos
+        #nos+=1
+        #print 'Stroke', nos
         self.length = int(math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)))
         self.width = width
         self.color = color

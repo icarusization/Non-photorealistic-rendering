@@ -2,10 +2,12 @@
 import numpy as np
 from Segmentation import *
 from Rendering_Layers import *
-from transformation import *
+#from transformation import *
 from Render_segment_layers import *
 from Canvas import *
 import math
+from skimage import io
+
 
 def hsv2rgb(h, s, v):
     h = float(h)
@@ -49,12 +51,12 @@ def rgb2hsv(r, g, b):
     return h, s, v
 
 
-class painter:
-    def __init__(self,Seg=None,Canvas=None):
+class Painter:
+    def __init__(self,Seg=None,canvas=None):
         self.Segmentation = Seg
         self.Subsegs = []
         self.layers = None
-        self.Canvas =  Canvas
+        self.canvas =  canvas
         
               
 
@@ -69,42 +71,54 @@ class painter:
 
     def assigncolor(self):
         self.layers=Layers()
-        self.layers.set_segs(self.Subsegs)
+        self.layers.set_segs(self.Segmentation.objects)
         self.layers.rendering()
 
     def set_canvas(self,canvas):
-        self.Canvas = canvas
+        self.canvas = canvas
 
     def set_canvascolor(self):
         for color in self.layers.pc:
-            self.Canvas.set_palettecolor(color)
+            self.canvas.set_palettecolor(color)
 
     def hsv(self):
         for seg in self.Subsegs:
             for key in seg.pix:
                 h,s,v=rgb2hsv(seg.pix[key][0],seg.pix[key][1],seg.pix[key][2])
                 seg.pix[key]=[h,s,v]
+        for obj in self.Segmentation.objects:
+            for subseg in obj.subsegment:
+                for k in subseg.pix:
+                    h,s,v=rgb2hsv(subseg.pix[k][0],subseg.pix[k][1],subseg.pix[k][2])
+                    subseg.pix[k]=[h,s,v]
 
     def paint(self):
         self.set_Subsegs()
-        self.hsv()
+        #self.hsv()
         self.assigncolor()
         self.set_canvascolor()
-        
-        for seg in self.layers.segs:
-            slayer=Seg_layer(seg.edge,seg.pix,self.Canvas)
-            slayer.render()
-        
+        im = Image.new("RGB", (400, 400), (255, 255, 255))
+        for obj in self.layers.segs:
+            for subseg in obj.subsegment:
+                slayer=Seg_layer(subseg.edge,subseg.pix,self.canvas.canvas,im)
+                slayer.render()
+	'''
+        for n in range(self.canvas.canvas.shape[0]):
+            for p in range(self.canvas.canvas.shape[1]):
+                print self.canvas.canvas[n][p]
+	'''
+        plt.imshow(self.canvas.canvas)
+        plt.show()
 
 if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('input.jpg')
-    #sg.set_no(1)
+    sg.set_no(1)
     sg.segment()
     canvas=Canvas()
-    canvas.set_canvas(600,400)
+    canvas.set_canvas(250,250)
     canvas.set_paper('paper.jpg')
-    pt=painter(sg,canvas)
+    pt=Painter(sg,canvas)
     pt.paint()
 
 
