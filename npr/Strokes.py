@@ -80,7 +80,7 @@ class Color(object):
             r = self.V
             g = a
             b = bb
-        return r*255, g*255, b*255
+        return r, g, b
 
 
 class Point(object):
@@ -131,9 +131,9 @@ class Stroke(object):
     # This part we inherit basic parameters data from the CURVES layer.
 
     def draw_strokes(self, im, x1=0, y1=0, x2=50, y2=50, width=15, color=0):
-        global nos
-        nos+=1
-        print 'Stroke', nos
+        #global nos
+        #nos+=1
+        #print 'Stroke', nos
         self.length = int(math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)))
         self.width = width
         self.color = color

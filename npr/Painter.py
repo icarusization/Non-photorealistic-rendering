@@ -71,7 +71,7 @@ class Painter:
 
     def assigncolor(self):
         self.layers=Layers()
-        self.layers.set_segs(self.Subsegs)
+        self.layers.set_segs(self.Segmentation.objects)
         self.layers.rendering()
 
     def set_canvas(self,canvas):
@@ -86,24 +86,29 @@ class Painter:
             for key in seg.pix:
                 h,s,v=rgb2hsv(seg.pix[key][0],seg.pix[key][1],seg.pix[key][2])
                 seg.pix[key]=[h,s,v]
+        for obj in self.Segmentation.objects:
+            for subseg in obj.subsegment:
+                for k in subseg.pix:
+                    h,s,v=rgb2hsv(subseg.pix[k][0],subseg.pix[k][1],subseg.pix[k][2])
+                    subseg.pix[k]=[h,s,v]
 
     def paint(self):
         self.set_Subsegs()
-        self.hsv()
+        #self.hsv()
         self.assigncolor()
         self.set_canvascolor()
         im = Image.new("RGB", (400, 400), (255, 255, 255))
-        for seg in self.layers.segs:
-            slayer=Seg_layer(seg.edge,seg.pix,self.canvas.canvas,im)
-            slayer.render()
-	result=np.ndarray(shape=(self.canvas.height,self.canvas.width,3))
-	f=lambda x:(int(x[0]),int(x[1]),int(x[2]))
-	for i in range(self.canvas.height):
-		for j in range(self.canvas.width):
-			result[i][j]=f(self.canvas.canvas[i][j][0:3]*self.canvas.canvas[i][j][3])
-			print self.canvas.canvas[i][j]
-        io.imshow(result)
-        io.show()
+        for obj in self.layers.segs:
+            for subseg in obj.subsegment:
+                slayer=Seg_layer(subseg.edge,subseg.pix,self.canvas.canvas,im)
+                slayer.render()
+	'''
+        for n in range(self.canvas.canvas.shape[0]):
+            for p in range(self.canvas.canvas.shape[1]):
+                print self.canvas.canvas[n][p]
+	'''
+        plt.imshow(self.canvas.canvas)
+        plt.show()
 
 if __name__ == '__main__':
     sg=Segmentation()
