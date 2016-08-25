@@ -40,7 +40,7 @@ class Seg_layer:
 		self.line_pix = {} #pixels of curve {(x,y):(r,g,b)}
 		self.canvas = canvas
 		self.im=im
-		self.sc = Sc(self.line_top,self.line_bottom,1,self.canvas,fig1,self.im)
+		#self.sc = Sc(self.line_top,self.line_bottom,1,self.canvas,fig1,self.im)
 		
 
 	def render(self,render_type=0):
@@ -76,7 +76,7 @@ class Seg_layer:
 			min_x = min_edge_x
 			max_x = int(max_edge_x - (max_edge_y-min_edge_y)*math.tan(self.alpha))
 		#max_x = int(max_edge_x + (max_edge_y-min_edge_y)*math.tan(self.alpha))
-		print "min=",min_x," max=",max_x
+		#print "min=",min_x," max=",max_x
 		get_start = False
 		step = 0
 		cur_x = 0
@@ -108,7 +108,7 @@ class Seg_layer:
 				cur_in_check = True
 			else:
 				if cur_in_check == True:
-					print count," ",cur_x," ",cur_y
+					#print count," ",cur_x," ",cur_y
 					if get_start == True:
 						end = (cur_x,cur_y)
 						#if self.edges[i][0] == start[0]:
@@ -137,12 +137,13 @@ class Seg_layer:
 			step = step + 1
 				
 	def draw_curve(self,s,e):
-                fig1 = plt.figure()
+                #fig1 = plt.figure()
+		fig1=None
 		line = self.brush(s,e)
 		self.get_line_tb(line)
 		self.get_line_pix()
-		self.sc = Sc(self.line_top, self.line_bottom, 1 , self.canvas, fig1 ,self.im)
-		self.sc.render()
+		sc = Sc(self.line_top, self.line_bottom, 1 , self.canvas, fig1 ,self.im)
+		sc.render()
 		
 		#for (key,value) in self.line_top.items():
 		#	plt.scatter(key[0],key[1])

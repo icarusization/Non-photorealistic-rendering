@@ -96,16 +96,22 @@ class Painter:
         for seg in self.layers.segs:
             slayer=Seg_layer(seg.edge,seg.pix,self.canvas.canvas,im)
             slayer.render()
-        io.imshow(self.canvas.canvas)
+	result=np.ndarray(shape=(self.canvas.height,self.canvas.width,3))
+	f=lambda x:(int(x[0]),int(x[1]),int(x[2]))
+	for i in range(self.canvas.height):
+		for j in range(self.canvas.width):
+			result[i][j]=f(self.canvas.canvas[i][j][0:3]*self.canvas.canvas[i][j][3])
+			print self.canvas.canvas[i][j]
+        io.imshow(result)
         io.show()
 
 if __name__ == '__main__':
     sg=Segmentation()
-    sg.imread('ball.jpg')
+    sg.imread('input.jpg')
     sg.set_no(1)
     sg.segment()
     canvas=Canvas()
-    canvas.set_canvas(600,400)
+    canvas.set_canvas(250,250)
     canvas.set_paper('paper.jpg')
     pt=Painter(sg,canvas)
     pt.paint()

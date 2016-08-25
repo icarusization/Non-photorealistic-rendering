@@ -1,4 +1,5 @@
 from skimage import io,transform
+import numpy as np
 
 class Canvas:
     def __init__(self):
@@ -14,7 +15,12 @@ class Canvas:
 
     def set_paper(self,paper):
         img=io.imread(paper)
-        self.canvas=transform.resize(img, (self.height,self.width))
+        img=transform.resize(img, (self.height,self.width))
+        self.canvas=np.ndarray(shape=(self.height,self.width,4))
+        for i in range(self.height):
+		for j in range(self.width):
+			self.canvas[i][j][0:3]=img[i][j]
+			self.canvas[i][j][3]=1.0
         #io.imshow(self.canvas)
         #io.show()
 

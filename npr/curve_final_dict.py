@@ -242,10 +242,13 @@ class Single_curve(object):
 	    				p = points[j]
 	    				c = p[2]
 	    				#self.im.putpixel((sself.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
-					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]]
+					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]
+					old_alpha=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]
 					new_color=np.array(c.get_color())
-					final_color=merge(new_color,old_color,0.5,0.5)
-					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]]=final_color
+					new_alpha=0.8
+					final_color,final_alpha=merge(new_color,old_color,new_alpha,old_alpha)
+					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]=new_color
+					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]=final_alpha
 				#print "pos ",200+p[0],200+p[1]
 			#self.im.show()
 

@@ -15,7 +15,7 @@ class Color(object):
         self.H = 0            # Hue
         self.S = 0     # Perceived intensity of a specific color. C/V.
         self.V = 0      # Black at 0, to white at 1.
-        self.alpha = 0          # From 0 to 1 to represent transparency
+        self.water = 0          # From 0 to 1---the percentage of water containing
 
     def __init__(self, R, G, B):
         R /= 255.0
@@ -80,7 +80,7 @@ class Color(object):
             r = self.V
             g = a
             b = bb
-        return r*255, g*255, b*255
+        return int(r*255), int(g*255), int(b*255)
 
 
 class Point(object):
