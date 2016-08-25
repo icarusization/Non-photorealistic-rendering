@@ -19,8 +19,9 @@ class Canvas:
         self.canvas=np.ndarray(shape=(self.height,self.width,4))
         for i in range(self.height):
 		for j in range(self.width):
-			self.canvas[i][j][0:3]=255*img[i][j]
+			self.canvas[i][j][0:3]=img[i][j]
 			self.canvas[i][j][3]=1.0
+			print self.canvas[i][j]
         #io.imshow(self.canvas)
         #io.show()
 
