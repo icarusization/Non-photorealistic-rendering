@@ -182,9 +182,9 @@ class Single_curve(object):
 #get_color in other parts should be public, I can use it to fullfill my list of color.
 	
 	def render(self):
-		global noc
-		noc+=1
-		print 'Curve',noc
+		#global noc
+		#noc+=1
+		#print 'Curve',noc
 		self.get_lenrange()
 		self.get_length()
 		self.get_width()
@@ -231,6 +231,7 @@ class Single_curve(object):
 
 
 		for i in range(len(self.middle_start)):
+                        #c=Strokes.Color(0,255,0)
 			c = Strokes.Color(self.up_side[self.starting_point[i]][0],self.up_side[self.starting_point[i]][1],self.up_side[self.starting_point[i]][2])
 			s.color = c
 			#print "width",self.width[i]

@@ -71,7 +71,7 @@ class Painter:
 
     def assigncolor(self):
         self.layers=Layers()
-        self.layers.set_segs(self.Subsegs)
+        self.layers.set_segs(self.Segmentation.objects)
         self.layers.rendering()
 
     def set_canvas(self,canvas):
@@ -86,27 +86,34 @@ class Painter:
             for key in seg.pix:
                 h,s,v=rgb2hsv(seg.pix[key][0],seg.pix[key][1],seg.pix[key][2])
                 seg.pix[key]=[h,s,v]
+        for obj in self.Segmentation.objects:
+            for subseg in obj.subsegment:
+                for k in subseg.pix:
+                    h,s,v=rgb2hsv(subseg.pix[k][0],subseg.pix[k][1],subseg.pix[k][2])
+                    subseg.pix[k]=[h,s,v]
 
     def paint(self):
         self.set_Subsegs()
-        self.hsv()
+        #self.hsv()
         self.assigncolor()
         self.set_canvascolor()
         im = Image.new("RGB", (400, 400), (255, 255, 255))
-        for seg in self.layers.segs:
-            slayer=Seg_layer(seg.edge,seg.pix,self.canvas.canvas,im)
-            slayer.render()
-        io.imshow(self.canvas.canvas)
-        io.show()
+        for obj in self.layers.segs:
+            for subseg in obj.subsegment:
+                slayer=Seg_layer(subseg.edge,subseg.pix,self.canvas.canvas,im)
+                slayer.render()
+        '''for n in self.canvas.canvas.shape[0]:
+            for p in self.canvas.canvas.shape[1]:
+                r,g,b=self.canvas.canvas[n][p][2],self.canvas.canvas[n][p][1],self.canvas.canvas[n][p][0]
+                self.canvas.canvas[n][p]=[r,g,b]'''
+        
+        plt.imshow(self.canvas.canvas)
+        plt.show()
 
 if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('ball.jpg')
-<<<<<<< HEAD
-    #sg.set_no(1)
-=======
     sg.set_no(1)
->>>>>>> b677b182be89d9a7d8ae08d22a4efd9a2e1f401d
     sg.segment()
     canvas=Canvas()
     canvas.set_canvas(600,400)

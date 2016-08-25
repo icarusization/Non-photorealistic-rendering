@@ -27,7 +27,7 @@ class Segmentation:
             self.objects.append(tmp)
 
     def imread(self,im):
-        self.im=io.imread(im)
+        self.im=plt.imread(im)
 
     def set_no(self,no):
         self.no=no
