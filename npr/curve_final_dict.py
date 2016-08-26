@@ -90,7 +90,7 @@ class Single_curve(object):
                         l2=np.sqrt(direction2.dot(direction2))
                         if (l1*l2!=0):
 				cos_curvature=(direction1.dot(direction2)/(l1*l2))
-				#print "cos ",cos_curvature
+				#print "cos ",cos_curvdature
 				if int(cos_curvature) == 1:
 					curvature = 0
 				else:
@@ -150,8 +150,11 @@ class Single_curve(object):
 			l1=np.sqrt(direction1.dot(direction1))
 			direction2=np.array([1,0])
                         l2=np.sqrt(direction2.dot(direction2))
-                        cos_curvature=(direction2.dot(direction1)/(l1*l2))
-			
+			if (l1*l2!=0):
+                        	cos_curvature=(direction2.dot(direction1)/(l1*l2))
+			else:
+				cos_curvature=0			
+
                         curvature=np.arccos(cos_curvature)
 			if (flag==0):
 				self.angle.append(curvature*57.29)
