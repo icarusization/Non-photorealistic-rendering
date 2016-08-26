@@ -105,7 +105,8 @@ class Painter:
 	'''
         for n in range(self.canvas.canvas.shape[0]):
             for p in range(self.canvas.canvas.shape[1]):
-                print self.canvas.canvas[n][p]
+		if(self.canvas.canvas[n][p][3]<1.0):
+                	print self.canvas.canvas[n][p][3]
 	'''
         plt.imshow(self.canvas.canvas)
         plt.show()
@@ -114,6 +115,7 @@ if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('input.jpg')
     sg.set_no(1)
+    sg.set_ns(1)
     sg.segment()
     canvas=Canvas()
     canvas.set_canvas(250,250)
