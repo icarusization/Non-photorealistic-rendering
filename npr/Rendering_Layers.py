@@ -70,7 +70,7 @@ class Layers:
     def __init__(self):
         self.segs = None                #   segs: A list of class "Segment" in "Utility.py".
         self.noc = 4                   #   noc:  The maximum number of the colors which will appear in the rendering.
-        self.pc = default_palette_color    #pc:   Palette constraints. It indicates which colors in the palette are allowed.
+        self.pc = palette_color    #pc:   Palette constraints. It indicates which colors in the palette are allowed.
         self.cam = CAM_CLOSED           #   cam:  Color assignment method. 
         self.vib = 0.05                 #   vib:  Random process in color assignment.  
         self.inv = 0.05                 #   inv:  Inverse_color_ration.

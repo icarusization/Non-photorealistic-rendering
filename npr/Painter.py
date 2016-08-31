@@ -78,8 +78,22 @@ class Painter:
         self.canvas = canvas
 
     def set_canvascolor(self):
-        for color in self.layers.pc:
-            self.canvas.set_palettecolor(color)
+        canvaspc=[]
+        for k in self.layers.pc:
+            if len(canvaspc)==0:
+                h,s,v=rgb2hsv(k[0],k[1],k[2])
+                canvaspc.extend([[h,s,v]])
+            else:
+                h,s,v=rgb2hsv(k[0],k[1],k[2])
+                hmax=0
+                for n,value in enumerate(canvaspc):
+                    if h<value[0]:
+                        canvaspc.insert(n,[h,s,v])
+                        break
+                    elif n==len(canvaspc)-1:
+                        canvaspc.insert(n+1,[h,s,v])
+                        break
+        self.canvas.pallete=canvaspc
 
     def hsv(self):
         for seg in self.Subsegs:
