@@ -7,6 +7,7 @@ from Render_segment_layers import *
 from Canvas import *
 import math
 from skimage import io
+import time
 
 
 def hsv2rgb(h, s, v):
@@ -72,6 +73,13 @@ class Painter:
     def assigncolor(self):
         self.layers=Layers()
         self.layers.set_segs(self.Segmentation.objects)
+        self.layers.set_noc(150)
+        time1=time.time()
+        #pc_list=self.layers.set_pc2(self.layers.pigments,self.layers.noc)
+        #self.layers.set_pc(pc_list)
+        self.layers.set_pc1()
+        time2=time.time()
+        print "set_pc done in ",time2-time1," s"
         self.layers.rendering()
 
     def set_canvas(self,canvas):
@@ -109,7 +117,10 @@ class Painter:
     def paint(self):
         self.set_Subsegs()
         #self.hsv()
+        time1=time.time()
         self.assigncolor()
+        time2=time.time()
+        print "assign_color done in ",time2-time1," s"
         self.set_canvascolor()
         im = Image.new("RGB", (400, 400), (255, 255, 255))
         for obj in self.layers.segs:
