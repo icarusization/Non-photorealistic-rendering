@@ -22,16 +22,16 @@ class Segmentation:
         self.np=3 #number of pixels to smooth the boundary
         self.background=None
         self.objects=[]
-        for i in range(self.no+1):#includeing the background segment
-            tmp=Segment()
-            self.objects.append(tmp)
-
+        
     def imread(self,im):
         self.im=plt.imread(im)
 
     def set_no(self,no):
         self.no=no
-        
+        for i in range(self.no+1):#includeing the background segment
+            tmp=Segment()
+            self.objects.append(tmp)
+
     def set_ns(self,ns):
         self.ns=ns
 
@@ -113,6 +113,7 @@ class Segmentation:
             self.objects[i].subsegment=[None for j in range(self.ns)]
             pixarray=np.array(list(self.objects[i].pix.values()))
             avg[i]=np.mean(pixarray)
+	    self.objects[i].avg_color=avg[i]
             size.append(self.objects[i].size)
         #pick out the background
         bg=avg.argmax(axis=0)
@@ -205,6 +206,8 @@ class Segmentation:
             for n in range(self.ns):
                 tmp=Segment()
                 tmp.pix=subpix[n]
+		pixarray=np.array(tmp.pix.values())
+		tmp.avg_color=np.mean(pixarray)
                 tmp.size=len(subpix[n])
                 tmp.edge=subedge[n]
                 #print n

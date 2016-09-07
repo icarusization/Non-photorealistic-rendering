@@ -249,7 +249,7 @@ class Single_curve(object):
 					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]
 					old_alpha=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]
 					new_color=np.array(c.get_color())
-					new_alpha=0.8
+					new_alpha=0.2
 					final_color,final_alpha=merge(new_color,old_color,new_alpha,old_alpha)
 					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]=final_color
 					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]=final_alpha

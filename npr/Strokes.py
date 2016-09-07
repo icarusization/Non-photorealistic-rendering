@@ -15,7 +15,7 @@ class Color(object):
         self.H = 0            # Hue
         self.S = 0     # Perceived intensity of a specific color. C/V.
         self.V = 0      # Black at 0, to white at 1.
-        self.alpha = 0          # From 0 to 1 to represent transparency
+        self.alpha = 1.0          # From 0 to 1 to represent transparency
 
     def __init__(self, R, G, B):
         R /= 255.0

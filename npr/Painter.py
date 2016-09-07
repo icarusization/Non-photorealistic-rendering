@@ -7,6 +7,7 @@ from Render_segment_layers import *
 from Canvas import *
 import math
 from skimage import io
+import time
 
 
 def hsv2rgb(h, s, v):
@@ -72,14 +73,35 @@ class Painter:
     def assigncolor(self):
         self.layers=Layers()
         self.layers.set_segs(self.Segmentation.objects)
+        self.layers.set_noc(150)
+        time1=time.time()
+        #pc_list=self.layers.set_pc2(self.layers.pigments,self.layers.noc)
+        #self.layers.set_pc(pc_list)
+        self.layers.set_pc1()
+        time2=time.time()
+        print "set_pc done in ",time2-time1," s"
         self.layers.rendering()
 
     def set_canvas(self,canvas):
         self.canvas = canvas
 
     def set_canvascolor(self):
-        for color in self.layers.pc:
-            self.canvas.set_palettecolor(color)
+        canvaspc=[]
+        for k in self.layers.pc:
+            if len(canvaspc)==0:
+                h,s,v=rgb2hsv(k[0],k[1],k[2])
+                canvaspc.extend([[h,s,v]])
+            else:
+                h,s,v=rgb2hsv(k[0],k[1],k[2])
+                hmax=0
+                for n,value in enumerate(canvaspc):
+                    if h<value[0]:
+                        canvaspc.insert(n,[h,s,v])
+                        break
+                    elif n==len(canvaspc)-1:
+                        canvaspc.insert(n+1,[h,s,v])
+                        break
+        self.canvas.pallete=canvaspc
 
     def hsv(self):
         for seg in self.Subsegs:
@@ -95,7 +117,10 @@ class Painter:
     def paint(self):
         self.set_Subsegs()
         #self.hsv()
+        time1=time.time()
         self.assigncolor()
+        time2=time.time()
+        print "assign_color done in ",time2-time1," s"
         self.set_canvascolor()
         im = Image.new("RGB", (400, 400), (255, 255, 255))
         for obj in self.layers.segs:
@@ -105,7 +130,8 @@ class Painter:
 	'''
         for n in range(self.canvas.canvas.shape[0]):
             for p in range(self.canvas.canvas.shape[1]):
-                print self.canvas.canvas[n][p]
+		if(self.canvas.canvas[n][p][3]<1.0):
+                	print self.canvas.canvas[n][p][3]
 	'''
         plt.imshow(self.canvas.canvas)
         plt.show()
@@ -114,6 +140,7 @@ if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('input.jpg')
     sg.set_no(1)
+    sg.set_ns(1)
     sg.segment()
     canvas=Canvas()
     canvas.set_canvas(250,250)

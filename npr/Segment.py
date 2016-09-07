@@ -8,6 +8,7 @@ class Segment:
         self.edge=[]
         self.abstraction_level=0
         self.pix={}
+	self.avg_color=(0,0,0)
         self.subsegment=[]
         self.L=50#the largest size of the subsegments
         self.M=0#the smallest size of the subsegments
