@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/orientation.iml" filepath="$PROJECT_DIR$/.idea/orientation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/npr.iml" filepath="$PROJECT_DIR$/.idea/npr.iml" />
     </modules>
   </component>
 </project>
