@@ -113,6 +113,7 @@ class Segmentation:
             self.objects[i].subsegment=[None for j in range(self.ns)]
             pixarray=np.array(list(self.objects[i].pix.values()))
             avg[i]=np.mean(pixarray)
+	    self.objects[i].avg_color=avg[i]
             size.append(self.objects[i].size)
         #pick out the background
         bg=avg.argmax(axis=0)
@@ -205,6 +206,8 @@ class Segmentation:
             for n in range(self.ns):
                 tmp=Segment()
                 tmp.pix=subpix[n]
+		pixarray=np.array(tmp.pix.values())
+		tmp.avg_color=np.mean(pixarray)
                 tmp.size=len(subpix[n])
                 tmp.edge=subedge[n]
                 #print n

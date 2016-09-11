@@ -6,6 +6,7 @@ from Utility import *
 import Image
 import Strokes
 import time
+import math
 
 
 def initial_stroke(m_s):                       # Create a stroke with parameters set below.
@@ -59,8 +60,8 @@ class Single_curve(object):
 		l2=np.sqrt(wid_ar.dot(wid_ar))
 		average_width=(l1+l2)/2
 
-                self.max_len=average_width#/0.618#/0.618
-                self.min_len=average_width*0.618#*0.618
+                self.max_len=average_width*5.0#/0.618#/0.618
+                self.min_len=average_width*2.0#*0.618
                 
 	def get_length(self): 
                 begin=0
@@ -226,33 +227,34 @@ class Single_curve(object):
 		s = initial_stroke(s)
 
 # Here you can revise these parameters according to the introduction in the Strokes Class.
-		s.distort = 0.2
-		s.shake = 0.3
-		s.tapering = 0.5
-		s.ColorVariability = 0.3
-		s.ShadeVariability = 0.3
-
+		s.distort = 0.6
+		s.shake = 0.6
+		s.tapering = 0.7
+		s.ColorVariability = 0.8
+		s.ShadeVariability = 0.8
 
 		for i in range(len(self.middle_start)):
-                        #c=Strokes.Color(0,255,0)
-			c = Strokes.Color(self.up_side[self.starting_point[i]][0],self.up_side[self.starting_point[i]][1],self.up_side[self.starting_point[i]][2])
+			# c=Strokes.Color(0,255,0)
+			c = Strokes.Color(self.up_side[self.starting_point[i]][0], self.up_side[self.starting_point[i]][1],
+							  self.up_side[self.starting_point[i]][2])
 			s.color = c
-			#print "width",self.width[i]
-			if self.middle_start[i][0]!=self.middle_end[i][0] and self.middle_start[i][1]!=self.middle_end[i][1]:
-				points = s.draw_strokes(self.im,self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1],self.width[i],s.color)
-			#print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
-		#print "points len",len(points)
+			# print "width",self.width[i]
+			if self.middle_start[i][0] != self.middle_end[i][0] and self.middle_start[i][1] != self.middle_end[i][1]:
+				points = s.draw_strokes(self.im, self.middle_start[i][0], self.middle_start[i][1],
+										self.middle_end[i][0], self.middle_end[i][1], self.width[i], s.color)
+				# print "test: ",self.middle_start[i][0],self.middle_start[i][1],self.middle_end[i][0],self.middle_end[i][1]
+				# print "points len",len(points)
 				for j in range(len(points)):
-	    				p = points[j]
-	    				c = p[2]
-	    				#self.im.putpixel((sself.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
-					old_color=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]
-					old_alpha=self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]
-					new_color=np.array(c.get_color())
-					new_alpha=0.8
-					final_color,final_alpha=merge(new_color,old_color,new_alpha,old_alpha)
-					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][0:3]=final_color
-					self.canvas[self.middle_start[i][0]+p[0]][self.middle_start[i][1]+p[1]][3]=final_alpha
+					p = points[j]
+					c = p[2]
+					# self.im.putpixel((sself.middle_start[0][0]-s.length/2+p[0],self.middle_start[0][1]+p[1]),c.get_color())
+					old_color = self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][0:3]
+					old_alpha = self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][3]
+					new_color = np.array(c.get_color())
+					new_alpha = 0.8
+					final_color, final_alpha = merge(new_color, old_color, new_alpha, old_alpha)
+					self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][0:3] = final_color
+					self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][3] = final_alpha
 				#print "pos ",200+p[0],200+p[1]
 			#self.im.show()
 

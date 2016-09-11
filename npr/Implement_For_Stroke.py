@@ -1,7 +1,7 @@
 import random
 import BezierLine
 import math
-
+import Strokes
 
 # Process: produce a random number between min and max(no requirement for sequence)(int or float)
 # Parameter: min, max---the boundary of the targeted number
@@ -213,3 +213,23 @@ def color_rectangle(np, color, cv, sv):
         down.append(c)
     all_color = [up, mid, down]
     return all_color
+
+
+# Process: to rotate the angle of the stroke
+# Parameter: CT, ST --- the cos and sin value of the angle
+#            square --- the length we need to go through to find the new graph
+# Attach: Here we go through a square of length+width to find the correspond original points. The data style convert
+#         from dict to list.
+def rotate(CT, ST, square, dicts):
+    newlist = []
+    k = range(int(-square), int(square))
+    for i in k:
+        for j in k:
+            org_x = int(CT*i+ST*j)
+            org_y = int(-ST*i+CT*j)
+            if (org_x, org_y) in dicts.keys():
+                c = dicts[(org_x, org_y)]
+                l = [i, j, c]
+                newlist.append(l)
+
+    return newlist
