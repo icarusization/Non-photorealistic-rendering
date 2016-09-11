@@ -54,9 +54,11 @@ class frequency:
 					e_i[y][x]=(e_i[y][x]-emin)*255/(emax-emin)
 			self.e_i_list.append(e_i)
 			ee_i=np.uint8(e_i)
+			'''	
 			plt.figure()
 			io.imshow(ee_i)    
 			io.show()  
+			'''	
 		return self.e_i_list
 
 
