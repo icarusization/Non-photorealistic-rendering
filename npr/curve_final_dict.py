@@ -255,6 +255,7 @@ class Single_curve(object):
 					final_color, final_alpha = merge(new_color, old_color, new_alpha, old_alpha)
 					self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][0:3] = final_color
 					self.canvas[self.middle_start[i][0] + p[0]][self.middle_start[i][1] + p[1]][3] = final_alpha
+
 				#print "pos ",200+p[0],200+p[1]
 			#self.im.show()
 

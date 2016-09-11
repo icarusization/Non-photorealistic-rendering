@@ -140,7 +140,8 @@ if __name__ == '__main__':
     sg=Segmentation()
     sg.imread('ball.jpg')
     sg.set_no(1)
-    sg.set_ns(5)
+
+    sg.set_ns(1)
     sg.segment()
     canvas=Canvas()
     canvas.set_canvas(250,250)

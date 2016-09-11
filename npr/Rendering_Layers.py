@@ -254,18 +254,22 @@ class Layers:
                 for i in range(fade_level):
                     if other_num < 1:
                         return pc_list
-                    fade = (fade_level)*rd.random()
-                    if fade>8:
-                        fade = 8*rd.random()
+
+                    fade = (fade_level-1)*0.1*rd.random()+0.1
+                    if fade>0.8:
+                        fade = 0.1+0.7*rd.random()
+
                     mix_c = merge(color, white, 1-fade, fade)
                     pc_list.append(mix_c)
                     other_num = other_num-1
                 for i in range(deepen_level):
                     if other_num < 1:
                         return pc_list
-                    deepen = (deepen_level)*rd.random()
-                    if deepen>9:
-                        deepen = 9*rd.random()
+
+                    deepen = (deepen_level-1)*0.1*rd.random()+0.1
+                    if deepen>0.9:
+                        deepen = 0.1+0.8*rd.random()
+
                     mix_c = merge(color, black, 1-deepen, deepen)
                     pc_list.append(mix_c)
                     other_num = other_num-1

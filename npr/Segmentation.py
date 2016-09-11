@@ -22,16 +22,16 @@ class Segmentation:
         self.np=3 #number of pixels to smooth the boundary
         self.background=None
         self.objects=[]
-        for i in range(self.no+1):#includeing the background segment
-            tmp=Segment()
-            self.objects.append(tmp)
-
+        
     def imread(self,im):
         self.im=plt.imread(im)
 
     def set_no(self,no):
         self.no=no
-        
+        for i in range(self.no+1):#includeing the background segment
+            tmp=Segment()
+            self.objects.append(tmp)
+
     def set_ns(self,ns):
         self.ns=ns
 
