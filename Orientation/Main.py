@@ -1,6 +1,7 @@
-import Image
+import Image, ImageDraw
 import Implement as Ip
 import random
+import math
 
 # Give: Orientation field dictionary f,  random noise field dictionary r
 # Data format: f[(i, j)]: [0/1, angle]        r[(i, j)]: angle
@@ -9,6 +10,7 @@ import random
 length = 100
 width = 100
 im = Image.new("RGB", (length, width), (255, 255, 255))
+im2 = Image.new("RGB", (length*10+1, width*10+1), (255, 255, 255))
 f = {}
 r = {}
 
@@ -22,14 +24,14 @@ for i in newrange:
     newrange[i] += 34
 for i in newrange:
     for j in [47]:
-        f[(i, j)] = [1, 1.53]
+        f[(i, j)] = [1, 1.23]
 
 newrange2 = range(50)
 for i in newrange2:
     newrange2[i] += 22
 for i in newrange2:
     for j in [63]:
-        f[(i, j)] = [1, 2.09]
+        f[(i, j)] = [1, -2.89]
 
 f[(10, 8)] = [1, 1.53]
 f[(10, 9)] = [1, 1.52]
@@ -44,16 +46,29 @@ dic = {}
 dic = Ip.transfer_data(f, r, dic)
 
 # Get into iterations to converge direction
-n = 50     # iteration times
+n = 100    # iteration times
 dic = Ip.iteration(n, dic)
 
-for i in range(length):
-    for j in range(width):
-        k = dic[(i, j)][0]/3.14
-        color = 255-int(255*k)
-        im.putpixel((i, j), (color, color, color))
+draw = ImageDraw.Draw(im2)
+for i in range(length-1):
+    for j in range(width-1):
+        h = dic[(i, j)][0]/3.14
+        r, g, b = Ip.hsv2rgb(h*360, 1.0, 1.0)
+        im.putpixel((i, j), (r, g, b))
+        newi = int(i*10+5+10.0*math.cos(h))
+        newj = int(j*10+5+10.0*math.sin(h))
+        draw.line(((i*10+5, j*10+5),(newi, newj)),fill=128)
+        if newi>i*10+5:
+            im2.putpixel((newi-1, newj),(0, 0, 0))
+        else:
+            im2.putpixel((newi+1, newj),(0, 0, 0))
+        if newj > j * 10 + 5:
+            im2.putpixel((newi, newj-1), (0, 0, 0))
+        else:
+            im2.putpixel((newi, newj+1), (0, 0, 0))
 
 im.show()
+im2.show()
 
 pass
 

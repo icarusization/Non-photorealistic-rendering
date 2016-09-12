@@ -1,8 +1,29 @@
 import random
+import math
 
 length = 100
 width = 100
 
+def hsv2rgb(h, s, v):
+    h = float(h)
+    s = float(s)
+    v = float(v)
+    h60 = h / 60.0
+    h60f = math.floor(h60)
+    hi = int(h60f) % 6
+    f = h60 - h60f
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
+    r, g, b = 0, 0, 0
+    if hi == 0: r, g, b = v, t, p
+    elif hi == 1: r, g, b = q, v, p
+    elif hi == 2: r, g, b = p, v, t
+    elif hi == 3: r, g, b = p, q, v
+    elif hi == 4: r, g, b = t, p, v
+    elif hi == 5: r, g, b = v, p, q
+    r, g, b = int(r * 255), int(g * 255), int(b * 255)
+    return r, g, b
 
 def transfer_data(f, r, dic):
     for i in range(length):
@@ -49,11 +70,14 @@ def square_central(dic, i, j):
         for i in range(len(angle_list)):
             angle += angle_list[i]*weight_list[i]
         angle = angle / weight_sum                          # Calculate the relative weight for neighbour points
-        angle += random.random()*3.14/80                    # Add a noise on angle to avoid parallel
+
+    angle += random.random() * 3.14 / 80                    # Add a noise on angle to avoid parallel
 
     l = len(weight_list)
     for i in range(l):
-        weight += weight_list[i]/l
+        weight += (weight_list[i]/l)
+    weight += random.random()*0.06-0.03
+    weight = min((max((0, weight)),1.0))
 
     return [angle, weight]
 
