@@ -79,7 +79,7 @@ class multi_orientation:
 					e_i[y][x]=e_ijmax+e_ij[e_ijmaxindex-1][y][x]+e_ij[0][y][x]
 				else:
 					e_i[y][x]=e_ijmax+e_ij[e_ijmaxindex-1][y][x]+e_ij[e_ijmaxindex+1][y][x]
-				self.MD[y][x] = (e_i[y][x]-(e_total-e_i[y][x])/7)/e_i[y][x]
+				self.MD[y][x] = (e_i[y][x]-(e_total-e_i[y][x])/5)/e_i[y][x]
 		MMD=np.uint8(self.MD)
 
 	def calcul_S(self):
@@ -98,7 +98,7 @@ class multi_orientation:
 				if x<=2 or y<=2 or x>=self.size[0]-3 or y>=self.size[1]-3:
 					self.S[x][y] = 0
 				else:
-					self.S[x][y] = (smax - self.S[x][y])/band*255
+					self.S[x][y] = (self.S[x][y] - smin)/band*255
 				print self.S[x][y]
 		SS=np.uint8(self.S)
 		print "S graph"

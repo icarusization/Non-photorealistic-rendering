@@ -13,8 +13,8 @@ class frequency:
 		self.image = image
 		
 	def calcul(self):
-		for i in range(3):
-			freq=0.07-(0.02*(i+1))
+		for i in range(7):
+			freq=0.08-(0.01*(i+1))
 			#print freq
 			e_ij=[]#a list of imgs
 			for j in range(8):#j is theta
