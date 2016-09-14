@@ -28,14 +28,18 @@ s = initial_stroke(s)
 s.distort = 0.2
 s.shake = 0.3
 s.tapering = 0.5
-s.ColorVariability = 0.3
-s.ShadeVariability = 0.3
-c = Strokes.Color(21, 190, 4)
+s.ColorVariability = 0.5
+s.ShadeVariability = 0.5
+c = Strokes.Color(0, 0, 0)
+c.give_color(24, 0.5, 0.5)
 s.color = c
 
-points = s.draw_strokes(im, 0, 50, 40, 50, 10, s.color)
+points = s.draw_strokes(im, 0, 10, 10, 13, 3, s.color)
+
 for i in range(len(points)):
     p = points[i]
     c = p[2]
-    im.putpixel((200-s.length/2+p[0],200+p[1]),c.get_color())
+    nc = c.get_color()
+    nc = (int(nc[0]*255), int(nc[1]*255), int(nc[2]*255))
+    im.putpixel((200-s.length/2+p[0],200+p[1]),nc)
 im.show()

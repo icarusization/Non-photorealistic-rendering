@@ -129,6 +129,7 @@ class Layers:
                 seg.pix[pos] = [pix[i]*0.5+seg_mean[i]*0.5 for i in range(3)];
 
     def closed_assign(self,pix,vib,rev):
+        '''
         closed_pix,closed_dif = -1,-1
         for index, ppix in enumerate(self.pc):
             vib_pix = [ppix[i]*rd.uniform(1-vib,1+vib) for i in range(3)]
@@ -139,6 +140,10 @@ class Layers:
                 closed_dif,closed_pix = dif, index
         as_color = self.pc[closed_pix]
         pix[0:3] = [as_color[0],as_color[1],as_color[2]]
+        '''
+        h, s, v = rgb2hsv(pix[0],pix[1],pix[2])
+        h, s, v = int(h/5)*5, int(s/0.1)*0.1, v
+        pix[0], pix[1], pix[2] = hsv2rgb(h, s, v)
         return pix
 
     def random_assign(self,vib,rev,mc,ss):
@@ -249,18 +254,22 @@ class Layers:
                 for i in range(fade_level):
                     if other_num < 1:
                         return pc_list
+
                     fade = (fade_level-1)*0.1*rd.random()+0.1
                     if fade>0.8:
                         fade = 0.1+0.7*rd.random()
+
                     mix_c = merge(color, white, 1-fade, fade)
                     pc_list.append(mix_c)
                     other_num = other_num-1
                 for i in range(deepen_level):
                     if other_num < 1:
                         return pc_list
+
                     deepen = (deepen_level-1)*0.1*rd.random()+0.1
                     if deepen>0.9:
                         deepen = 0.1+0.8*rd.random()
+
                     mix_c = merge(color, black, 1-deepen, deepen)
                     pc_list.append(mix_c)
                     other_num = other_num-1

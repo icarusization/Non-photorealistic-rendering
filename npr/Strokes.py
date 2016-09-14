@@ -8,6 +8,8 @@ import Implement_For_Stroke
 import math
 nos=0
 
+# r, g, b: 0--1
+# H: 0-360    S,V: 0-1
 class Color(object):
     # Present color in two ways RGB & HSL
     # Consider the transform relationship between RGB & HSL;
@@ -15,71 +17,70 @@ class Color(object):
         self.H = 0            # Hue
         self.S = 0     # Perceived intensity of a specific color. C/V.
         self.V = 0      # Black at 0, to white at 1.
-        self.alpha = 1.0          # From 0 to 1 to represent transparency
+        self.R = 0
+        self.G = 0
+        self.B = 0
+        self.alpha = 0          # From 0 to 1 to represent transparency
 
-    def __init__(self, R, G, B):
-        R /= 255.0
-        G /= 255.0
-        B /= 255.0
-        color_max = max(R, G, B)
-        color_min = min(R, G, B)
-        self.V = max(R, G, B)
-        if color_max==color_min:
-            self.H = 0
-            self.S = 0
-            return
-        self.S = (color_max - color_min) / color_max
-        if R == color_max:
-            self.H = (G-B) / (color_max - color_min) * 60
-        if G == color_max:
-            self.H = 120 + (B-R) / (color_max - color_min) * 60
-        if B == color_max:
-            self.H = 240 + (R-G) / (color_max - color_min) * 60
-        if self.H < 0:
-            self.H += 360
+    def __init__(self, r, g, b):
+        if r>1 or g>1 or b>1:
+            r /= 255.0
+            g /= 255.0
+            b /= 255.0
+        self.R = r
+        self.G = g
+        self.B = b
+        mx = max(r, g, b)
+        mn = min(r, g, b)
+        df = mx - mn
+        if mx == mn:
+            h = 0
+        elif mx == r:
+            h = (60 * ((g - b) / df) + 360) % 360
+        elif mx == g:
+            h = (60 * ((b - r) / df) + 120) % 360
+        elif mx == b:
+            h = (60 * ((r - g) / df) + 240) % 360
+        if mx == 0:
+            s = 0
+        else:
+            s = df / mx
+        v = mx
+        self.H = h
+        self.S = s
+        self.V = v
 
     def give_color(self, h, s, v):
         self.H = h
         self.S = s
         self.V = v
+        self.get_color()
 
     def get_color(self):
-        r = 0
-        g = 0
-        b = 0
-        if self.S == 0:
-            r = g = b = self.V
-        else:
-            self.H /= 60
-        i = int(self.H)
-        f = self.H - i
-        a = self.V * (1 - self.S)
-        bb = self.V * (1 - self.S * f)
-        c = self.V * (1 - self.S * (1 - f))
-        if i == 0:
-            r = self.V
-            g = c
-            b = a
-        if i == 1:
-            r = bb
-            g = self.V
-            b = a
-        if i == 2:
-            r = a
-            g = self.V
-            b = c
-        if i == 3:
-            r = a
-            g = bb
-            b = self.V
-        if i == 4:
-            r = c
-            g = a
-            b = self.V
-        if i == 5:
-            r = self.V
-            g = a
-            b = bb
+        h = float(self.H)
+        s = float(self.S)
+        v = float(self.V)
+        h60 = h / 60.0
+        h60f = math.floor(h60)
+        hi = int(h60f) % 6
+        f = h60 - h60f
+        p = v * (1 - s)
+        q = v * (1 - f * s)
+        t = v * (1 - (1 - f) * s)
+        r, g, b = 0, 0, 0
+        if hi == 0:
+            r, g, b = v, t, p
+        elif hi == 1:
+            r, g, b = q, v, p
+        elif hi == 2:
+            r, g, b = p, v, t
+        elif hi == 3:
+            r, g, b = p, q, v
+        elif hi == 4:
+            r, g, b = t, p, v
+        elif hi == 5:
+            r, g, b = v, p, q
+        self.R, self.G, self.B = r, g, b
         return r, g, b
 
 
@@ -88,7 +89,6 @@ class Point(object):
         self.x = x
         self.y = y
         self.color = z
-
 
 # Description: How to draw the line
 class Stroke(object):
@@ -99,6 +99,7 @@ class Stroke(object):
 
         # This part defines a 2D array which store the color of each point.
         self.lists = []
+        self.dicts = {}
         # This is container for all Points classes for the stroke Points.x y c[x][y]
         self.c = [[(0, 0, 0) for col in range(self.exp_width)] for row in range(self.exp_length)]
         # This is a 2D array that stores the color information of each point
@@ -137,6 +138,8 @@ class Stroke(object):
         self.length = int(math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)))
         self.width = width
         self.color = color
+        self.dicts = {}
+        self.lists = []
 
         # Here we calculate the shape for exp_length and exp_width which performs better
         new_lists = self.shape_changing()
@@ -218,9 +221,13 @@ class Stroke(object):
                     y_bias = int(self.axis_line[int(lm * x) - 1][1] / wm)
                 else:
                     y_bias = 0
-                l = [x, y - y_bias, c]
-                self.lists.append(l)
 
+                self.dicts[(x,y-y_bias)] = c
+
+        x, y = x2 - x1, y2 - y1
+        if x!=0 or y!=0:
+            CT, ST = 1.0*x/math.sqrt(x*x+y*y), 1.0*y/math.sqrt(x*x+y*y)
+            self.lists = Implement_For_Stroke.rotate(CT, ST, self.length+self.width, self.dicts)
         return self.lists
     # This part draws stroke by firstly calculating boundary using shape_changing, then it use color_attribute to
     # get c[x][y] array. Finally we return the corresponding Points lists.
