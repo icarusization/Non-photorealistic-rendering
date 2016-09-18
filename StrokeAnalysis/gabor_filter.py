@@ -14,13 +14,13 @@ class frequency:
 		
 	def calcul(self):
 		for i in range(7):
-			freq=0.19-(0.02*(i+1))
+			freq=1/(math.sqrt(2)*(i+1))
 			#print freq
 			e_ij=[]#a list of imgs
 			for j in range(8):#j is theta
 				thet=j/8*math.pi
 				e_j=np.ndarray(self.image.shape)#img (3)		
-				filt_real, filt_imag = gabor(self.image, frequency=freq,theta=thet)
+				filt_real, filt_imag = gabor(self.image, frequency=freq,theta=thet,sigma_x=1,sigma_y=1)
 				for y in range(filt_real.shape[0]):
 					for x in range(filt_real.shape[1]):
 						e_j[y][x]=math.sqrt(filt_real[y][x]**2+filt_imag[y][x]**2)
