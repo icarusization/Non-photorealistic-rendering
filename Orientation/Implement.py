@@ -1,8 +1,13 @@
 import random
 import math
 
-length = 100
-width = 100
+length = 612
+width = 496
+
+
+def set_size(im):
+    length, width = im.size()
+
 
 def hsv2rgb(h, s, v):
     h = float(h)
@@ -24,6 +29,7 @@ def hsv2rgb(h, s, v):
     elif hi == 5: r, g, b = v, p, q
     r, g, b = int(r * 255), int(g * 255), int(b * 255)
     return r, g, b
+
 
 def transfer_data(f, r, dic):
     for i in range(length):
@@ -47,7 +53,7 @@ def iteration(n, dic):
                 point = dic[(i, j)]
                 if point[1] != 1.0:
                     point = square_central(dic, i, j)
-                    #point[1] = 2*point[1]/(1+point[1])
+                    # point[1] = 2*point[1]/(1+point[1])
                     dic[(i, j)] = point
     return dic
 
@@ -77,8 +83,6 @@ def square_central(dic, i, j):
     for i in range(l):
         weight += (weight_list[i]/l)
     weight += random.random()*0.06-0.03
-    weight = min((max((0, weight)),1.0))
+    weight = min((max((0, weight)), 1.0))
 
     return [angle, weight]
-
-
