@@ -3,6 +3,12 @@ import Strokes
 import math
 import Image, ImageDraw
 import numpy as np
+import os
+
+if_dic = {}
+for i in range(197):
+    for j in range(189):
+        if_dic[(i, j)] = 0
 
 
 def neighbour(point, dic, l_max, w_max):
@@ -23,7 +29,7 @@ def direction_sketch(im):
         for j in range(width):
             color = im.getpixel((i, j))
             light = color[0]/255.0
-            if light<0.5:
+            if light < 0.5:
                 m[i][j] = 0
             else:
                 m[i][j] = 1
@@ -33,12 +39,12 @@ def direction_sketch(im):
         for j in range(width):
             f[(i, j)] = [0, 0.0]
 
-    angle_dic = {(1, 0):0.0, (1, 1):0.78, (0, 1):1.54, (-1, 1):2.35, (-1, 0):3.14,
-                 (-1, -1):3.92, (0, -1):4.71, (1, -1):5.49}
+    angle_dic = {(1, 0): 0.0, (1, 1): 0.78, (0, 1): 1.54, (-1, 1): 2.35, (-1, 0): 3.14,
+                 (-1, -1): 3.92, (0, -1): 4.71, (1, -1): 5.49}
     for i in range(length):
         for j in range(width):
             point = [i, j]
-            if m[i][j] ==1:
+            if m[i][j] == 1:
                 l = neighbour(point, f, length, width)
                 for p in l:
                     if m[p[0]][p[1]] == 1:
@@ -52,7 +58,7 @@ def random_noise(length, width):
     r = {}
     for i in range(length):
         for j in range(width):
-            r[(i, j)] = random.random() * 3.14
+            r[(i, j)] = random.random() * 6.28
     return r
 
 
@@ -72,16 +78,56 @@ def transfer_data(f, r, length, width):
     return dic
 
 
-def iteration(n, dic, length, width):
+def effect_map(dic, length, width):
+    eff = {}
+    for i in range(length):
+        for j in range(width):
+            if dic[(i, j)][1] == 1.0:
+                eff[(i, j)] = 1.0
+            else:
+                eff[(i, j)] = 0.0
+    return eff
+
+
+def iteration(n, dic, eff, length, width):
+    new_eff = eff.copy()
+
     for k in range(n):
         for i in range(length):
             for j in range(width):
                 point = dic[(i, j)]
+                cp = [i, j]
+
                 if point[1] != 1.0:
                     point = square_central(dic, i, j, length, width)
-                    # point[1] = 2*point[1]/(1+point[1])
                     dic[(i, j)] = point
-    return dic
+
+                '''
+                ave, var = float(0), float(0)
+                neigh_point = neighbour(cp, dic, length, width)
+                for p in neigh_point:
+                    ave += eff[p]
+                ave /= len(neigh_point)
+                for p in neigh_point:
+                    var += (eff[p]-ave)**2
+                var = math.sqrt(var/len(neigh_point))
+                if var>0.0001:
+                    for p in neigh_point:
+                        new_eff[(i, j)] += eff[p]
+                    if k % 5 == 0:
+                        new_eff[(i, j)] *= (1 + random.random() * 0.5)
+                    new_eff[(i, j)] = new_eff[(i, j)] / 9
+                '''
+                neigh_point = neighbour(cp, dic, length, width)
+                for p in neigh_point:
+                    new_eff[(i, j)] += eff[p]
+
+                if k % 5 == 0:
+                    new_eff[(i, j)] *= 1 # (1+random.random()*0.5)
+                new_eff[(i, j)] = new_eff[(i, j)] / (len(neigh_point)+1)
+
+        eff = new_eff.copy()
+    return dic, eff
 
 
 def square_central(dic, i, j, length, width):
@@ -92,25 +138,42 @@ def square_central(dic, i, j, length, width):
 
     for m in [i-1, i, i+1]:
         for n in [j-1, j, j+1]:
-            if m>=0 and m<length and n>=0 and n<width and (m!=i or n!=j):
+            if 0 <= m < length and 0 <= n < width and (m != i or n != j):
                 point = dic[(m, n)]
                 angle_list.append(point[0])
                 weight_list.append(point[1])
 
     weight_sum = sum(weight_list)
+
     if weight_sum != 0:
+        cp = dic[(i, j)]
         for i in range(len(angle_list)):
             angle += angle_list[i]*weight_list[i]
-        angle = angle / weight_sum                          # Calculate the relative weight for neighbour points
+
+        # angle  = angle/weight_sum
+        angle = cp[0]*cp[1]+(1-cp[1])*angle / weight_sum
 
     angle += random.random() * 3.14 / 80                    # Add a noise on angle to avoid parallel
 
     l = len(weight_list)
     for i in range(l):
-        weight += (weight_list[i]/l)
-    weight += random.random()*0.06-0.03
+        weight += (weight_list[i] / l)
+    weight += random.random() * 0.03 - 0.015
     weight = min((max((0, weight)), 1.0))
-
+    '''
+    angle = dic[(i, j)][0]
+    weight = dic[(i, j)][1]
+    if weight_sum != 0 and if_dic[(i, j)]==0:
+        k = 0
+        for i in range(len(angle_list)):
+            if weight_list[i] == 1.0:
+                angle += angle_list[i]
+                k += 1
+        if k!=0:
+            angle = angle/k
+            weight = 1.0
+            if_dic[(i, j)] = 1
+    '''
     return [angle, weight]
 
 
@@ -130,15 +193,16 @@ def pop_points(dic, point, w):
     return dic
 
 
-def connect_orientation(dic, max_length, w, im):
+def connect_orientation(dic, eff, max_length, w, im):
     (length, width) = im.size
     stroke_list = []
-    pix = im.load()
 
     while len(dic) != 0:
         key_value = dic.popitem()
         begin = key_value[0]
         s_angle = key_value[1][0]
+
+        s_weight = key_value[1][1]
 
         axis_line = []
         point, l = begin, 0
@@ -148,28 +212,51 @@ def connect_orientation(dic, max_length, w, im):
         while l<max_length and con:
             con = False
             next_point = []
+            '''
+            # Arrange by weight
             for ele in neighbour(point, dic, length, width):
-                angle = dic[ele][0]
-                COS = math.cos(angle-s_angle)
-                if abs(COS)>0.707:
+                weight = dic[ele][1]
+                wd = abs(weight - s_weight)
+                if abs(wd) < 0.1:
                     con = True
-                    next_point.append([ele, COS])
+                    next_point.append([ele, wd])
 
-            max = -1.0
+            min = 1.0
             for pair in next_point:
-                if pair[1]>max:
+                if pair[1] < min:
                     point = pair[0]
-                    max = pair[1]
+                    min = pair[1]
+
+            axis_line.append(point)
+            l += 1
+            '''
+            s_effect = eff[point]
+            for ele in neighbour(point, dic, length, width):
+                effect = eff[ele]
+                ed = abs(effect-s_effect)
+                if abs(ed) < 0.5:
+                    con = True
+                    next_point.append([ele, ed])
+
+            min = 100
+            for pair in next_point:
+                if pair[1] < min:
+                    point = pair[0]
+                    min = pair[1]
+
+            dic = pop_points(dic, point, w)
             axis_line.append(point)
             l += 1
 
-        # color = [color[0]/l, color[1]/l, color[2]/l]
-        color = [int(random.random() * 255), int(random.random() * 255), int(random.random() * 255)]
-        if l > 10:
-            stroke_list.append([begin, point, color])
+        color = [int(255-s_weight*255), int(255-s_weight*255), int(255-s_weight*255)]
+        # color = [int(random.random() * 255), int(random.random() * 255), int(random.random() * 255)]
 
+        if l > 5:
+            stroke_list.append([begin, point, color])
+        '''
         for points in axis_line:
             dic = pop_points(dic, points, w)
+        '''
 
     return stroke_list
 
