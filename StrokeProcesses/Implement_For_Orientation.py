@@ -1,9 +1,6 @@
 import random
 import Strokes
-import math
-import Image, ImageDraw
 import numpy as np
-import os
 
 if_dic = {}
 for i in range(197):
@@ -23,11 +20,11 @@ def neighbour(point, dic, l_max, w_max):
 
 
 def direction_sketch(im):
-    (length, width) = im.size
+    length, width,_ = im.shape
     m = np.zeros((length, width), np.int)
     for i in range(length):
         for j in range(width):
-            color = im.getpixel((i, j))
+            color = im[i,j]
             light = color[0]/255.0
             if light < 0.5:
                 m[i][j] = 0
@@ -97,12 +94,13 @@ def iteration(n, dic, eff, length, width):
             for j in range(width):
                 point = dic[(i, j)]
                 cp = [i, j]
+                '''
 
                 if point[1] != 1.0:
                     point = square_central(dic, i, j, length, width)
                     dic[(i, j)] = point
 
-                '''
+
                 ave, var = float(0), float(0)
                 neigh_point = neighbour(cp, dic, length, width)
                 for p in neigh_point:
@@ -183,8 +181,8 @@ def pop_points(dic, point, w):
         x = range(point[0]-w, point[0]+w, 1)
         y = range(point[1]-w, point[1]+w, 1)
     else:
-        x = point[0]
-        y = point[1]
+        x = [point[0]]
+        y = [point[1]]
 
     for i in x:
         for j in y:
@@ -192,12 +190,26 @@ def pop_points(dic, point, w):
                 del dic[(i, j)]
     return dic
 
+def get_origin_color(orim, axis_line):
+    r, g, b = 0, 0, 0
+    for points in axis_line:
+        the_color = orim.getpixel(points)
+        r += the_color[0]
+        g += the_color[1]
+        b += the_color[2]
+    le = len(axis_line)
+    if le != 0:
+        r /= le
+        g /= le
+        b /= le
+    return [r, g, b]
 
-def connect_orientation(dic, eff, max_length, w, im):
+def connect_orientation(dic, eff, max_length, w, im, orim):
     (length, width) = im.size
     stroke_list = []
 
     while len(dic) != 0:
+        #iterate list
         key_value = dic.popitem()
         begin = key_value[0]
         s_angle = key_value[1][0]
@@ -210,6 +222,7 @@ def connect_orientation(dic, eff, max_length, w, im):
         color = [0, 0, 0]
 
         while l<max_length and con:
+
             con = False
             next_point = []
             '''
@@ -248,7 +261,7 @@ def connect_orientation(dic, eff, max_length, w, im):
             axis_line.append(point)
             l += 1
 
-        color = [int(255-s_weight*255), int(255-s_weight*255), int(255-s_weight*255)]
+        color = get_origin_color(orim, axis_line)
         # color = [int(random.random() * 255), int(random.random() * 255), int(random.random() * 255)]
 
         if l > 5:
@@ -260,7 +273,7 @@ def connect_orientation(dic, eff, max_length, w, im):
 
     return stroke_list
 
-
+'''
 def show_stroke(stroke_list, im):
     (length, width) = im.size
     s = Strokes.Stroke()
@@ -272,6 +285,7 @@ def show_stroke(stroke_list, im):
     s.ColorVariability = 0.5
     s.ShadeVariability = 0.5
 
+
     draw = ImageDraw.Draw(im)
     for l in stroke_list:
         color = l[2]
@@ -279,8 +293,6 @@ def show_stroke(stroke_list, im):
         s.color = c
         w = 5
 
-        draw.line(((l[0][0], l[0][1]), (l[1][0], l[1][1])), fill = 255)
-        '''
         points = s.draw_strokes(im, l[0][0], l[0][1], l[1][0], l[1][1], w, s.color)
 
         for i in range(len(points)):
@@ -290,5 +302,6 @@ def show_stroke(stroke_list, im):
             nc = (int(nc[0] * 255), int(nc[1] * 255), int(nc[2] * 255))
             if 0<=p[0]<length and 0<=p[1]<width:
                 im.putpixel((p[0], p[1]), nc)
-        '''
+
     return im
+'''

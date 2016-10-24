@@ -1,0 +1,41 @@
+1.(11.13)
+a. stroke analysis
+b. stroke process
+
+
+2.(1.31)
+a. constrcution:
+	1. semantic segmentation (manual label,depth)
+	2. relation between objects 
+	3. objects and the whole picture
+
+	4^7->(0,1)^12
+        1.linear regression
+	2.network: tf.nns(shape=(7,12))	
+
+
+b. what to paint:
+	#
+	1. semantic analysis(sentence) -> emotion
+	2. internet mining
+        #
+	3. saliency detection(segmentation): graph-cut + object proposal
+	4. image blending
+
+
+c.painting style:
+	#
+	1. interpolation with generative network
+	#
+
+
+tasks to do:
+1.a
+2.b(3,4)
+3.b(1,2,c)
+
+
+1.resaearch
+2.find code
+3.run sample
+

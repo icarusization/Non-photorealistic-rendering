@@ -1,0 +1,55 @@
+Reactiondiffusion.py
+
+class Reactiondiffusion:
+1. elementlist:
+[(x,y),..]
+
+
+2. neighborlist:
+[[1,4,6,7],....]
+
+
+3. reaction:
+[local property,...]
+
+
+4. diffusion:
+lambda
+
+
+
+output
+
+
+
+
+
+
+Painter.py
+import ... as Rd
+
+
+
+
+class Painter:
+
+size:
+size contrast 0.8
+
+a=Rd()
+
+
+
+
+orientation:
+
+or contrast 0.7
+
+b=Rd()
+
+
+color:
+
+color contrast 0.6
+
+c=Rd()
