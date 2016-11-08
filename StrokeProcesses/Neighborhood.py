@@ -20,10 +20,10 @@ class Neighborhood:
 		self.im=None
 		self.orientaion=None
 		self.samplemap=None
-		self.samplelist=None #the samples
-		self.orientationlist=None #the orientations at the samples
+		self.samplelist=None #the samples [(x,y)]
+		self.orientationlist=None #the orientations at the samples 0-2pi
 		self.distmat=None #to cache the distance matrix for later use
-		self.neighborhood_graph=None #the final result
+		self.neighborhood_graph=None #the final result [[1,2,4],[4,6,7,8]]
 
 	def set_image(self,im):
 		self.im=im
